@@ -386,7 +386,7 @@ extension MXSegmentedControl {
         return contentView.segments.count
     }
     
-    private func newSegment() -> MXSegment {
+    private func newSegment(at index: Int? = nil) -> MXSegment {
         
         let segment = MXSegment()
         
@@ -397,10 +397,10 @@ extension MXSegmentedControl {
         segment.isSelected = (contentView.segments.count == selectedIndex)
         segment.addTarget(self, action: #selector(MXSegmentedControl.select(segment:)), for: .touchUpInside)
         
-        contentView.append(segment)
+        contentView.append(segment, at: index)
         return segment
     }
-    
+
     @objc private func select(segment: MXSegment) {
         if let index = contentView.segments.index(of: segment) {
             select(index: index, animated: true)
@@ -428,8 +428,8 @@ extension MXSegmentedControl {
     /// Creates and append a new segment with the given title.
     ///
     /// - Parameter title: The new segment title.
-    @discardableResult public func append(title: String) -> MXSegment {
-        let segment = newSegment()
+    @discardableResult public func append(title: String, at index: Int? = nil) -> MXSegment {
+        let segment = newSegment(at: index)
         segment.setTitle(title, for: .normal)
         return segment
     }
@@ -437,8 +437,8 @@ extension MXSegmentedControl {
     /// Creates and append a new segment with the given title.
     ///
     /// - Parameter title: The new segment title.
-    @discardableResult public func append(attributedTitle: NSAttributedString) -> MXSegment {
-        let segment = newSegment()
+    @discardableResult public func append(attributedTitle: NSAttributedString, at index: Int? = nil) -> MXSegment {
+        let segment = newSegment(at: index)
         segment.setAttributedTitle(attributedTitle, for: .normal)
         return segment
     }
@@ -446,12 +446,12 @@ extension MXSegmentedControl {
     /// Creates and append a new segment with the given image.
     ///
     /// - Parameter title: The new segment image.
-    @discardableResult public func append(image: UIImage?) -> MXSegment {
-        let segment = newSegment()
+    @discardableResult public func append(image: UIImage?, at index: Int? = nil) -> MXSegment {
+        let segment = newSegment(at: index)
         segment.setImage(image, for: .normal)
         return segment
     }
-    
+
     /// Selects the segment at the given index.
     ///
     /// - Parameters:
@@ -486,7 +486,7 @@ extension MXSegmentedControl {
         
         var separators = Separators()
         
-        func append(_ segment: MXSegment) {
+        func append(_ segment: MXSegment, at index: Int? = nil) {
             guard !segments.contains(segment) else {
                 return
             }
@@ -499,12 +499,16 @@ extension MXSegmentedControl {
             }
             
             addSubview(segment)
-            segments.append(segment)
+            if let `index` = index, index < segments.count {
+                segments.insert(segment, at: `index`)
+            } else {
+                segments.append(segment)
+            }
             
             invalidateIntrinsicContentSize()
             layoutIfNeeded()
         }
-        
+
         func remove(_ segment: MXSegment) {
             guard var index = segments.index(of: segment) else {
                 return

@@ -118,7 +118,6 @@ import UIKit
     public private(set) var selectedIndex: Int = 0 {
         willSet { contentView.segments[selectedIndex].isSelected = false }
         didSet {
-            sendActions(for: .valueChanged)
             contentView.segments[selectedIndex].isSelected = true
         }
     }
@@ -457,9 +456,12 @@ extension MXSegmentedControl {
     /// - Parameters:
     ///   - index: The segment index to be selected.
     ///   - animated: true if the selection should be animated, false if it should be immediate.
-    public func select(index: Int, animated: Bool) {
+    public func select(index: Int, animated: Bool, shouldCallValueChanged: Bool = true) {
         selectedIndex = index
-        
+        if shouldCallValueChanged {
+            sendActions(for: .valueChanged)
+        }
+
         UIView.animate(withDuration: animated ? animation.duration : 0,
                        delay: animation.delay,
                        usingSpringWithDamping: animation.dampingRatio,

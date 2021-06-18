@@ -55,6 +55,9 @@ public class MXSegment: UIButton {
         set { _width = newValue }
     }
     
+    public var selectedFont: UIFont = UIFont.systemFont(ofSize: 17)
+    public var unselectedFont: UIFont = UIFont.systemFont(ofSize: 17)
+    
     private var _width: CGFloat = UIView.noIntrinsicMetric
     
     @discardableResult public func set(width: CGFloat) -> MXSegment {
@@ -107,6 +110,12 @@ extension MXSegment {
     public override func layoutSubviews() {
         super.layoutSubviews()
         
+        if state == .selected {
+            titleLabel?.font = selectedFont
+        } else {
+            titleLabel?.font = unselectedFont
+        }
+
         guard let titleLabel = titleLabel, let imageView = imageView else {
             return
         }

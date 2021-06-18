@@ -45,10 +45,19 @@ import UIKit
     /// The font of the segments.
     /// If you are using styled text in iOS 6 or later, assigning a new value to this property causes the font to be applied to the entirety of the string in the attributedText property. If you want to apply the font to only a portion of the text, create a new attributed string with the desired style information and associate it with the segment. If you are not using styled text, this property applies to the entire segments string in the title property.
     /// The default value for this property is the system font at a size of 17 points (using the systemFont(ofSize:) class method of UIFont).
-    @IBInspectable public dynamic var font = UIFont.systemFont(ofSize: 17) {
+    @IBInspectable public dynamic var selectedFont = UIFont.systemFont(ofSize: 17) {
         didSet {
             for segment in contentView.segments {
-                segment.titleLabel?.font = font
+                segment.selectedFont = selectedFont
+            }
+            setNeedsLayout()
+        }
+    }
+    
+    @IBInspectable public dynamic var unselectedFont = UIFont.systemFont(ofSize: 17) {
+        didSet {
+            for segment in contentView.segments {
+                segment.unselectedFont = unselectedFont
             }
             setNeedsLayout()
         }
@@ -392,7 +401,8 @@ extension MXSegmentedControl {
         segment.setTitleColor(textColor, for: .normal)
         segment.setTitleColor(selectedTextColor, for: .selected)
         segment.contentEdgeInsets = segmentEdgeInsets
-        segment.titleLabel?.font = font
+        segment.selectedFont = selectedFont
+        segment.unselectedFont = unselectedFont
         segment.isSelected = (contentView.segments.count == selectedIndex)
         segment.addTarget(self, action: #selector(MXSegmentedControl.select(segment:)), for: .touchUpInside)
         

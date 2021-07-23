@@ -81,6 +81,24 @@ import UIKit
         }
     }
     
+    /// Sets the color of the segments image to use for the normal state.
+    @IBInspectable public dynamic var imageColor: UIColor? {
+        didSet {
+            for (index, segment) in contentView.segments.enumerated() {
+                segment.tintColor = selectedIndex == index ? selectedTextColor : textColor
+            }
+        }
+    }
+    
+    /// Sets the color of the segments image to use for the selected state.
+    @IBInspectable public dynamic var selectedImageColor: UIColor? {
+        didSet {
+            for (index, segment) in contentView.segments.enumerated() {
+                segment.tintColor = selectedIndex == index ? selectedTextColor : textColor
+            }
+        }
+    }
+    
     /// Sets the width of the segments.
     @IBInspectable public var segmentWidth: CGFloat = 0 {
         didSet {
@@ -125,9 +143,13 @@ import UIKit
     
     /// The currently selected segment index.
     public private(set) var selectedIndex: Int = 0 {
-        willSet { contentView.segments[selectedIndex].isSelected = false }
+        willSet {
+            contentView.segments[selectedIndex].isSelected = false
+            contentView.segments[selectedIndex].tintColor = imageColor
+        }
         didSet {
             contentView.segments[selectedIndex].isSelected = true
+            contentView.segments[selectedIndex].tintColor = selectedImageColor
         }
     }
     
@@ -400,6 +422,7 @@ extension MXSegmentedControl {
         
         segment.setTitleColor(textColor, for: .normal)
         segment.setTitleColor(selectedTextColor, for: .selected)
+        segment.tintColor = (contentView.segments.count == selectedIndex) ? selectedImageColor : imageColor
         segment.contentEdgeInsets = segmentEdgeInsets
         segment.selectedFont = selectedFont
         segment.unselectedFont = unselectedFont
@@ -494,7 +517,7 @@ extension MXSegmentedControl {
     
     class ContentView: UIView {
         
-        internal(set) var segments = [MXSegment]()
+        var segments = [MXSegment]()
         
         var separators = Separators()
         
